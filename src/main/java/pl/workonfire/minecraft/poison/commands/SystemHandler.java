@@ -36,7 +36,6 @@ public class SystemHandler implements CommandExecutor {
                     sender.sendMessage(Poison.getPrefix() + "§aCommand execution finished in §f" + (stopTime - startTime) / 1000000 + " ms");
                 } catch (IOException | InterruptedException exception) {
                     sender.sendMessage(Poison.getPrefix() + "§4Error.");
-                    exception.printStackTrace();
                 }
             });
         }
