@@ -20,11 +20,17 @@ public class SystemHandler implements CommandExecutor {
             long startTime = System.nanoTime();
             sender.sendMessage(Poison.getPrefix() + "§cExecuting system command §7§o" + systemCommand + "§c... A lag may occur.");
             try {
-                String commandInterpreter;
-                if (System.getProperty("os.name").contains("Windows")) commandInterpreter = "cmd /c";
-                else commandInterpreter = "bash -c";
-                Process process = Runtime.getRuntime().exec(commandInterpreter + " " + systemCommand);
-                process.waitFor();
+                List<String> fullCommand = new ArrayList<>();
+                if (System.getProperty("os.name").contains("Windows")) {
+                    fullCommand.add("cmd");
+                    fullCommand.add("/c");
+                }
+                else {
+                    fullCommand.add("bash");
+                    fullCommand.add("-c");
+                }
+                fullCommand.add(systemCommand);
+                Process process = new ProcessBuilder().command(fullCommand).start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 List<String> output = new ArrayList<>();
                 String line;
@@ -32,7 +38,7 @@ public class SystemHandler implements CommandExecutor {
                 if (!output.isEmpty()) for (String outputLine : output) sender.sendMessage(outputLine);
                 long stopTime = System.nanoTime();
                 sender.sendMessage(Poison.getPrefix() + "§aCommand execution finished in §f" + (stopTime - startTime) / 1000000 + " ms");
-            } catch (IOException | InterruptedException exception) {
+            } catch (IOException exception) {
                 sender.sendMessage(Poison.getPrefix() + "§4Error.");
             }
         }
